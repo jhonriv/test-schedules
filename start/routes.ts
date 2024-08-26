@@ -24,12 +24,12 @@ router
     router.post('/', [EmployeesController, 'store'])
     router.put('/', [EmployeesController, 'update'])
     router.get('/:id', [EmployeesController, 'show'])
+    router.get('/:id/schedules', [SchedulesController, 'index'])
   })
   .prefix('/employees')
 
 router
   .group(() => {
-    router.get('/', [SchedulesController, 'index'])
     router.post('/', [SchedulesController, 'store'])
     router.put('/', [SchedulesController, 'update'])
     router.get('/:id', [SchedulesController, 'show'])

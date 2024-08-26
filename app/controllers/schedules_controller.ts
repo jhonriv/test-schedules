@@ -16,11 +16,14 @@ export default class SchedulesController {
   /**
    * Display a list of resource
    */
-  async index({ response }: HttpContext) {
+  async index({ params, response }: HttpContext) {
     try {
-      const schedules = await ScheduleService.index()
+      const schedules = await ScheduleService.index(params.id)
       return response.ok(schedules)
     } catch (error) {
+      if (error instanceof UnShowedException)
+        return response.status(error.status).send({ message: error.message, code: error.code })
+
       return response.internalServerError({ message: error.message })
     }
   }

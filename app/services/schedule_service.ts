@@ -7,12 +7,20 @@ import Schedule from '#models/schedule'
 import moment from 'moment'
 
 export default class ScheduleService {
-  static async index(): Promise<DtoSchedule[]> {
+  static async index(id: number): Promise<DtoSchedule[]> {
     try {
-      let dbResponse: Schedule[] = await Schedule.all()
+      const employee = await Employee.find(id)
+      if (!employee)
+        throw new UnShowedException('Employee not found', {
+          status: 404,
+          code: 'EMPLOYEE_NOT_FOUND',
+        })
+      let dbResponse: Schedule[] = await employee.related('schedules').query()
       const schedules: DtoSchedule[] = dbResponse.map((schedule) => this.toDtoSchedule(schedule))
       return schedules
     } catch (error) {
+      if (error instanceof UnShowedException) throw error
+
       throw new Error(`Failed to get schedules: ${error}`)
     }
   }
